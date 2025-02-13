@@ -39,3 +39,35 @@ local Slider = Tabs.Player:AddSlider("Speed", {
     end)
 
     Slider:SetValue(3)
+
+local Toggle = Tabs.Player:AddToggle("Noclip", {Title = "Noclip", Default = false })
+
+    Toggle:OnChanged(function()
+        if game.Players.LocalPlayer.Character ~= nil then
+			for _,v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+				if v:IsA('BasePart') and v.CanCollide and v.Name ~= floatName then
+					v.CanCollide = false
+				end
+			end
+		end
+    end)
+
+    Options.MyToggle:SetValue(false)
+
+local Toggle = Tabs.Player:AddToggle("Fly", {Title = "Fly", Default = false })
+
+    Toggle:OnChanged(function()
+        
+    end)
+
+    Options.MyToggle:SetValue(false)
+
+local Toggle = Tabs.Player:AddToggle("Infinite Jump", {Title = "Infinite Jump", Default = false })
+
+    Toggle:OnChanged(function()
+        game:GetService("UserInputService").JumpRequest:connect(function()
+		game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")ss
+        end)
+    end)
+
+    Options.MyToggle:SetValue(false)
