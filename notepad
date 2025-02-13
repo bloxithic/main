@@ -1,6 +1,7 @@
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+local Options = Fluent.Options
 
 local Window = Fluent:CreateWindow({
     Title = "notepad",
@@ -13,61 +14,28 @@ local Window = Fluent:CreateWindow({
 })
 
 local Tabs = {
-    Player = Window:AddTab({ Title = "Player", Icon = "user-round" }),
+    Player = Window:AddTab({ Title = "Main", Icon = "house" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
-local Options = Fluent.Options
-
-local Slider = Tabs.Player:AddSlider("Speed", {
+local TargetWalkspeed
+local Speed = Tabs.Main:AddSlider("Speed", {
         Title = "Speed",
         Description = "",
-        Default = 16,
-        Min = 0,
+        Default = 15,
+        Min = 1,
         Max = 100,
         Rounding = 1,
         Callback = function(Value)
-            print("Slider was changed:", Value)
+		TargetWalkspeed = Value
         end
-    })
+})
 
-    Slider:OnChanged(function(Value)
-        local Player = game.Players.PlayerYouIndex
-        if Player.Character then
-            Player.Character.Humanoid.WalkSpeed = Value
-        end
-    end)
-
-    Slider:SetValue(3)
-
-local Toggle = Tabs.Player:AddToggle("Noclip", {Title = "Noclip", Default = false })
+local InstantInteract = Tabs.Main:AddToggle("Instant Interact", {Title = "Instant Interact", Default = false })
 
     Toggle:OnChanged(function()
-        if game.Players.LocalPlayer.Character ~= nil then
-			for _,v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-				if v:IsA('BasePart') and v.CanCollide and v.Name ~= floatName then
-					v.CanCollide = false
-				end
-			end
-		end
+        fireproximityprompt(prompt)
     end)
 
     Options.MyToggle:SetValue(false)
 
-local Toggle = Tabs.Player:AddToggle("Fly", {Title = "Fly", Default = false })
-
-    Toggle:OnChanged(function()
-        
-    end)
-
-    Options.MyToggle:SetValue(false)
-
-local Toggle = Tabs.Player:AddToggle("Infinite Jump", {Title = "Infinite Jump", Default = false })
-
-    Toggle:OnChanged(function()
-        game:GetService("UserInputService").JumpRequest:connect(function()
-		game:GetService"Players".LocalPlayer.Character:FindFirstChildOfClass'Humanoid':ChangeState("Jumping")ss
-        end)
-    end)
-
-    Options.MyToggle:SetValue(false)
