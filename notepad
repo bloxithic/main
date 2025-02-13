@@ -9,20 +9,33 @@ local Window = Fluent:CreateWindow({
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
     Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+    MinimizeKey = Enum.KeyCode.RightShift -- Used when theres no MinimizeKeybind
 })
 
 local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "house" }),
+    Player = Window:AddTab({ Title = "Player", Icon = "user-round" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
 local Options = Fluent.Options
 
-    local Toggle = Tabs.Main:AddToggle("Auto Farm Level", {Title = "Auto Farm Level", Default = false })
+local Slider = Tabs.Player:AddSlider("Speed", {
+        Title = "Speed",
+        Description = "",
+        Default = 16,
+        Min = 0,
+        Max = 100,
+        Rounding = 1,
+        Callback = function(Value)
+            print("Slider was changed:", Value)
+        end
+    })
 
-    Toggle:OnChanged(function()
-        
+    Slider:OnChanged(function(Value)
+        local Player = game.Players.PlayerYouIndex
+        if Player.Character then
+            Player.Character.Humanoid.WalkSpeed = Value
+        end
     end)
 
-    Options.MyToggle:SetValue(false)
+    Slider:SetValue(3)
