@@ -1,3 +1,12 @@
+
+if placeId == 2753915549 then
+	OldWorld = true
+elseif placeId == 4442272183 then
+	NewWorld = true
+elseif placeId == 7449423635 then
+	ThreeWorld = true
+end
+
 function CheckQuest()
     local MyLevel = game.Players.LocalPlayer.Data.Level.Value
     if OldWorld then
@@ -425,56 +434,14 @@ function CheckQuest()
             QuestName = "NutsIslandQuest"
             QuestNumber = 1
             NameMon = "Peanut Scout"
-            CFrameQuest =
-                CFrame.new(
-                -2104.35669,
-                38.1299706,
-                -10194.0654,
-                0.777809024,
-                -4.20693302e-09,
-                0.62850064,
-                1.93921803e-08,
-                1,
-                -1.73054406e-08,
-                -0.62850064,
-                2.56483261e-08,
-                0.777809024
-            )
-            CFrameMon =
-                CFrame.new(
-                -2126.40723,
-                90.5567474,
-                -10301.9639,
-                -0.835617959,
-                5.5450208e-08,
-                -0.549311042,
-                -1.3585427e-08,
-                1,
-                1.21611308e-07,
-                0.549311042,
-                1.09083217e-07,
-                -0.835617959
-            )
+            CFrameQuest = CFrame.new(-2104.35669, 38.1299706, -10194.0654, 0.777809024, -4.20693302e-09, 0.62850064, 1.93921803e-08, 1, -1.73054406e-08, -0.62850064, 2.56483261e-08, 0.777809024)
+            CFrameMon = CFrame.new( -2126.40723, 90.5567474, -10301.9639, -0.835617959, 5.5450208e-08, -0.549311042, -1.3585427e-08, 1, 1.21611308e-07, 0.549311042, 1.09083217e-07, -0.835617959)
         elseif MyLevel >= 2100 and MyLevel <= 2124 then
             Ms = "Peanut President [Lv. 2100]"
             QuestName = "NutsIslandQuest"
             QuestNumber = 2
             NameMon = "Peanut President"
-            CFrameQuest =
-                CFrame.new(
-                -2104.35669,
-                38.1299706,
-                -10194.0654,
-                0.777809024,
-                -4.20693302e-09,
-                0.62850064,
-                1.93921803e-08,
-                1,
-                -1.73054406e-08,
-                -0.62850064,
-                2.56483261e-08,
-                0.777809024
-            )
+            CFrameQuest = CFrame.new(-2104.35669, 38.1299706, -10194.0654, 0.777809024, -4.20693302e-09, 0.62850064, 1.93921803e-08, 1, -1.73054406e-08, -0.62850064, 2.56483261e-08, 0.777809024)
             CFrameMon =
                 CFrame.new(
                 -2118.75439,
