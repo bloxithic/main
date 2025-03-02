@@ -47,16 +47,12 @@ Toggles.EnableWalkSpeedHacks:OnChanged(function()
     
     if humanoid then
         if Toggles.EnableWalkSpeedHacks.Value then
-            if not EnabledSpeed then
-                originalWalkSpeed = humanoid.WalkSpeed -- Store latest walk speed before modifying
-            end
+            originalWalkSpeed = humanoid.WalkSpeed -- Store latest walk speed before modifying
             EnabledSpeed = true
-            humanoid.WalkSpeed = Options.WalkSpeed.Value -- Set speed from slider
+            humanoid.WalkSpeed = Options.WalkSpeed.Value
         else
             EnabledSpeed = false
-            if originalWalkSpeed then
-                humanoid.WalkSpeed = originalWalkSpeed -- Restore latest game-set speed
-            end
+            humanoid.WalkSpeed = originalWalkSpeed or 16
         end
     end
 end)
@@ -76,7 +72,6 @@ MainLeftBoxLocalPlayer:AddSlider('WalkSpeed', {
 
 Options.WalkSpeed:OnChanged(function()
     local humanoid = getHumanoid()
-
     if humanoid and EnabledSpeed then
         humanoid.WalkSpeed = Options.WalkSpeed.Value
     end
@@ -96,19 +91,14 @@ local originalJumpPower = nil
 
 Toggles.EnableJumpPowerHacks:OnChanged(function()
     local humanoid = getHumanoid()
-    
     if humanoid then
         if Toggles.EnableJumpPowerHacks.Value then
-            if not EnabledJump then
-                originalJumpPower = humanoid.JumpPower -- Store latest walk speed before modifying
-            end
+            originalJumpPower = humanoid.JumpPower -- Store latest walk speed before modifying
             EnabledJump = true
             humanoid.JumpPower = Options.JumpPower.Value -- Set speed from slider
         else
             EnabledJump = false
-            if originalJumpPower then
-                humanoid.JumpPower = originalJumpPower -- Restore latest game-set speed
-            end
+            humanoid.JumpPower = originalJumpPower or 50 -- Restore latest game-set speed
         end
     end
 end)
@@ -128,7 +118,6 @@ MainLeftBoxLocalPlayer:AddSlider('JumpPower', {
 
 Options.JumpPower:OnChanged(function()
     local humanoid = getHumanoid()
-
     if humanoid and EnabledJump then
         humanoid.JumpPower = Options.JumpPower.Value
     end
