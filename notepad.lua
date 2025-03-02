@@ -1,5 +1,5 @@
 local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/'
-
+local RunService = game:GetService("RunService")
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
@@ -33,11 +33,13 @@ MainLeftBoxLocalPlayer:AddToggle('EnableWalkSpeedHacks', {
     end
 })
 
-local RunService = game:GetService("RunService")
 local originalWalkSpeed = nil
-local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+local originalJumpPower = nil
+local enabledSpeed = false
+local enabledJump = false
+local speedConnection = nil
+local jumpConnection = nil
 
--- Function to get the humanoid safely
 local function getHumanoid()
     local character = game.Players.LocalPlayer.Character
     return character and character:FindFirstChildOfClass("Humanoid")
@@ -47,9 +49,20 @@ local function maintainWalkSpeed()
     return RunService.RenderStepped:Connect(function()
         local humanoid = getHumanoid()
         if humanoid and enabledSpeed then
-            -- If the game's WalkSpeed is 0, do not apply the speed hack
             if humanoid.WalkSpeed > 0 then
                 humanoid.WalkSpeed = Options.WalkSpeed.Value
+            end
+        end
+    end)
+end
+
+local function maintainJumpPower()
+    return RunService.RenderStepped:Connect(function()
+        local humanoid = getHumanoid()
+        if humanoid and enabledJump then
+            if humanoid.JumpPower > 0 then
+                humanoid.UseJumpPower = true -- Ensures jump power is always used
+                humanoid.JumpPower = Options.JumpPower.Value
             end
         end
     end)
@@ -60,7 +73,7 @@ Toggles.EnableWalkSpeedHacks:OnChanged(function()
     if humanoid then
         if Toggles.EnableWalkSpeedHacks.Value then
             originalWalkSpeed = humanoid.WalkSpeed
-            EnabledSpeed = true
+            enabledSpeed = true
             
             if humanoid.WalkSpeed > 0 then
                 humanoid.WalkSpeed = Options.WalkSpeed.Value
@@ -70,7 +83,7 @@ Toggles.EnableWalkSpeedHacks:OnChanged(function()
                 speedConnection = maintainWalkSpeed()
             end
         else
-            EnabledSpeed = false
+            enabledSpeed = false
             if speedConnection then
                 speedConnection:Disconnect()
                 speedConnection = nil
@@ -95,7 +108,7 @@ MainLeftBoxLocalPlayer:AddSlider('WalkSpeed', {
 
 Options.WalkSpeed:OnChanged(function()
     local humanoid = getHumanoid()
-    if humanoid and EnabledSpeed and humanoid.WalkSpeed > 0 then
+    if humanoid and enabledSpeed and humanoid.WalkSpeed > 0 then
         humanoid.WalkSpeed = Options.WalkSpeed.Value
     end
 end)
@@ -117,7 +130,7 @@ Toggles.EnableJumpPowerHacks:OnChanged(function()
     if humanoid then
         if Toggles.EnableJumpPowerHacks.Value then
             originalJumpPower = humanoid.JumpPower
-            EnabledJump = true
+            enabledJump = true
             
             if humanoid.JumpPower > 0 then
                 humanoid.UseJumpPower = true
@@ -128,7 +141,7 @@ Toggles.EnableJumpPowerHacks:OnChanged(function()
                 jumpConnection = maintainJumpPower()
             end
         else
-            EnabledJump = false
+            enabledJump = false
             if jumpConnection then
                 jumpConnection:Disconnect()
                 jumpConnection = nil
@@ -153,7 +166,7 @@ MainLeftBoxLocalPlayer:AddSlider('JumpPower', {
 
 Options.JumpPower:OnChanged(function()
     local humanoid = getHumanoid()
-    if humanoid and EnabledJump and humanoid.JumpPower > 0 then
+    if humanoid and enabledJump and humanoid.JumpPower > 0 then
         humanoid.UseJumpPower = true
         humanoid.JumpPower = Options.JumpPower.Value
     end
