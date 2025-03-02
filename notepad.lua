@@ -97,7 +97,7 @@ local GiveHammer = MainRightBoxWeapons:AddButton('Give Hammer', function()
 	}
 	game:GetService("ReplicatedStorage").Events.Vending:FireServer(unpack(args))
 end)
-local GiveBroom = MainRightBoxWeapons:AddButton('Broom', function()
+local GiveBroom = MainRightBoxWeapons:AddButton('Give Broom', function()
 	local player = game.Players.LocalPlayer -- Gets the player who executed the script
 	local args = {
 	    [1] = 3, -- The vending item ID for "Broom"
