@@ -180,17 +180,6 @@ local GiveRainbowPizza = MainRightBoxItems:AddButton('Give Rainbow Pizza', funct
 	}
 	game:GetService("ReplicatedStorage").Events.GiveTool:FireServer(unpack(args))
 end)
-local GiveArmor = MainRightBoxItems:AddButton('Give Armor', function()
-	local player = game.Players.LocalPlayer -- Gets the player who executed the script
-    local args = {
-    	[1] = 3, -- The vending item ID for "Armor2"
-    	[2] = "Armor2", -- The item/tool you want to give
-    	[3] = "Armor", -- The category or section
-    	[4] = player.Name, -- Automatically sets the player's name (dynamic)
-    	[5] = 1 -- Any additional parameter, such as quantity or item type
-	}
-	game:GetService("ReplicatedStorage").Events.Vending:FireServer(unpack(args))
-end)
 
 local MainRightBoxWeapons = Tabs.Main:AddRightGroupbox('Weapons')
 
