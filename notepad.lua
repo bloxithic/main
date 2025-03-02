@@ -134,7 +134,7 @@ Options.JumpPower:OnChanged(function()
     end
 end)
 
-local GiveArmor = MainRightBoxItems:AddButton('Give Armor', function()
+local GiveArmor = MainLeftBoxLocalPlayer:AddButton('Give Armor', function()
 	local player = game.Players.LocalPlayer -- Gets the player who executed the script
     local args = {
     	[1] = 3, -- The vending item ID for "Armor2"
@@ -146,14 +146,14 @@ local GiveArmor = MainRightBoxItems:AddButton('Give Armor', function()
 	game:GetService("ReplicatedStorage").Events.Vending:FireServer(unpack(args))
 end)
 
-local AddStrength = MainRightBoxItems:AddButton('+1 Strength', function()
+local AddStrength = MainLeftBoxLocalPlayer:AddButton('+1 Strength', function()
 	local args = {
         [1] = "Strength"
     }
     game:GetService("ReplicatedStorage").Events.RainbowWhatStat:FireServer(unpack(args))
 end)
 
-local AddSpeed = MainRightBoxItems:AddButton('+1 Speed', function()
+local AddSpeed = MainLeftBoxLocalPlayer:AddButton('+1 Speed', function()
 	local args = {
         [1] = "Speed"
     }
