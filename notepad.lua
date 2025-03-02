@@ -72,7 +72,7 @@ Toggles.EnableWalkSpeedHacks:OnChanged(function()
     local humanoid = getHumanoid()
     if humanoid then
         if Toggles.EnableWalkSpeedHacks.Value then
-            if originalWalkSpeed == nil then -- Save only once to prevent overriding original value
+            if not originalWalkSpeed then
                 originalWalkSpeed = humanoid.WalkSpeed
             end
             enabledSpeed = true
@@ -90,10 +90,9 @@ Toggles.EnableWalkSpeedHacks:OnChanged(function()
                 speedConnection:Disconnect()
                 speedConnection = nil
             end
-
-            if originalWalkSpeed then -- Restore original speed
+            if originalWalkSpeed then
                 humanoid.WalkSpeed = originalWalkSpeed
-                originalWalkSpeed = nil -- Reset to avoid issues if speed hacks are toggled again
+                originalWalkSpeed = nil
             end
         end
     end
@@ -135,7 +134,9 @@ Toggles.EnableJumpPowerHacks:OnChanged(function()
     local humanoid = getHumanoid()
     if humanoid then
         if Toggles.EnableJumpPowerHacks.Value then
-            originalJumpPower = humanoid.JumpPower
+            if not originalJumpPower then
+                originalJumpPower = humanoid.JumpPower
+            end
             enabledJump = true
             
             if humanoid.JumpPower > 0 then
@@ -152,7 +153,10 @@ Toggles.EnableJumpPowerHacks:OnChanged(function()
                 jumpConnection:Disconnect()
                 jumpConnection = nil
             end
-            humanoid.JumpPower = originalJumpPower or 50
+            if originalJumpPower then
+                humanoid.JumpPower = originalJumpPower
+                originalJumpPower = nil
+            end
         end
     end
 end)
