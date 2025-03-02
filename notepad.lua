@@ -60,7 +60,7 @@ Toggles.EnableWalkSpeedHacks:OnChanged(function()
     if humanoid then
         if Toggles.EnableWalkSpeedHacks.Value then
             originalWalkSpeed = humanoid.WalkSpeed
-            enabledSpeed = true
+            EnabledSpeed = true
             
             if humanoid.WalkSpeed > 0 then
                 humanoid.WalkSpeed = Options.WalkSpeed.Value
@@ -70,7 +70,7 @@ Toggles.EnableWalkSpeedHacks:OnChanged(function()
                 speedConnection = maintainWalkSpeed()
             end
         else
-            enabledSpeed = false
+            EnabledSpeed = false
             if speedConnection then
                 speedConnection:Disconnect()
                 speedConnection = nil
@@ -95,7 +95,7 @@ MainLeftBoxLocalPlayer:AddSlider('WalkSpeed', {
 
 Options.WalkSpeed:OnChanged(function()
     local humanoid = getHumanoid()
-    if humanoid and enabledSpeed and humanoid.WalkSpeed > 0 then
+    if humanoid and EnabledSpeed and humanoid.WalkSpeed > 0 then
         humanoid.WalkSpeed = Options.WalkSpeed.Value
     end
 end)
@@ -116,12 +116,24 @@ Toggles.EnableJumpPowerHacks:OnChanged(function()
     local humanoid = getHumanoid()
     if humanoid then
         if Toggles.EnableJumpPowerHacks.Value then
-            originalJumpPower = humanoid.JumpPower -- Store latest walk speed before modifying
+            originalJumpPower = humanoid.JumpPower
             EnabledJump = true
-            humanoid.JumpPower = Options.JumpPower.Value -- Set speed from slider
+            
+            if humanoid.JumpPower > 0 then
+                humanoid.UseJumpPower = true
+                humanoid.JumpPower = Options.JumpPower.Value
+            end
+
+            if not jumpConnection then
+                jumpConnection = maintainJumpPower()
+            end
         else
             EnabledJump = false
-            humanoid.JumpPower = originalJumpPower or 50 -- Restore latest game-set speed
+            if jumpConnection then
+                jumpConnection:Disconnect()
+                jumpConnection = nil
+            end
+            humanoid.JumpPower = originalJumpPower or 50
         end
     end
 end)
@@ -141,7 +153,8 @@ MainLeftBoxLocalPlayer:AddSlider('JumpPower', {
 
 Options.JumpPower:OnChanged(function()
     local humanoid = getHumanoid()
-    if humanoid and EnabledJump then
+    if humanoid and EnabledJump and humanoid.JumpPower > 0 then
+        humanoid.UseJumpPower = true
         humanoid.JumpPower = Options.JumpPower.Value
     end
 end)
