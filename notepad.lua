@@ -23,20 +23,8 @@ local Tabs = {
 
 local MainLeftBoxLocalPlayer = Tabs.Main:AddLeftGroupbox('LocalPlayer')
 
-MainLeftBoxLocalPlayer:AddToggle('EnableWalkSpeedHacks', {
-    Text = 'Enable Walk Speed Hacks',
-    Default = false, -- Default value (true / false)
-    Tooltip = 'Enables speed hacks', -- Information shown when you hover over the toggle
-
-    Callback = function(Value)
-        print('Player enabled speed hacks', Value)
-    end
-})
-
 local originalWalkSpeed = nil
 local originalJumpPower = nil
-local enabledSpeed = false
-local enabledJump = false
 local speedConnection = nil
 local jumpConnection = nil
 
@@ -48,10 +36,8 @@ end
 local function maintainWalkSpeed()
     return RunService.RenderStepped:Connect(function()
         local humanoid = getHumanoid()
-        if humanoid and enabledSpeed then
-            if humanoid.WalkSpeed > 0 then
-                humanoid.WalkSpeed = Options.WalkSpeed.Value
-            end
+        if humanoid and Toggles.EnableWalkSpeedHacks.Value then
+            humanoid.WalkSpeed = Options.WalkSpeed.Value
         end
     end)
 end
@@ -59,44 +45,37 @@ end
 local function maintainJumpPower()
     return RunService.RenderStepped:Connect(function()
         local humanoid = getHumanoid()
-        if humanoid and enabledJump then
-            if humanoid.JumpPower > 0 then
-                humanoid.UseJumpPower = true -- Ensures jump power is always used
-                humanoid.JumpPower = Options.JumpPower.Value
-            end
+        if humanoid and Toggles.EnableJumpPowerHacks.Value then
+            humanoid.UseJumpPower = true
+            humanoid.JumpPower = Options.JumpPower.Value
         end
     end)
 end
 
-Toggles.EnableWalkSpeedHacks:OnChanged(function()
-    local humanoid = getHumanoid()
-    if humanoid then
-        if Toggles.EnableWalkSpeedHacks.Value then
-            if not originalWalkSpeed then
-                originalWalkSpeed = humanoid.WalkSpeed
-            end
-            enabledSpeed = true
-            
-            if humanoid.WalkSpeed > 0 then
-                humanoid.WalkSpeed = Options.WalkSpeed.Value
-            end
+MainLeftBoxLocalPlayer:AddToggle('EnableWalkSpeedHacks', {
+    Text = 'Enable Walk Speed Hacks',
+    Default = false,
+    Tooltip = 'Enables speed hacks',
 
-            if not speedConnection then
+    Callback = function(Value)
+        local humanoid = getHumanoid()
+        if humanoid then
+            if Value then
+                if not originalWalkSpeed then
+                    originalWalkSpeed = humanoid.WalkSpeed
+                end
+                humanoid.WalkSpeed = Options.WalkSpeed.Value
                 speedConnection = maintainWalkSpeed()
-            end
-        else
-            enabledSpeed = false
-            if speedConnection then
-                speedConnection:Disconnect()
-                speedConnection = nil
-            end
-            if originalWalkSpeed then
-                humanoid.WalkSpeed = originalWalkSpeed
-                originalWalkSpeed = nil
+            else
+                if speedConnection then
+                    speedConnection:Disconnect()
+                    speedConnection = nil
+                end
+                humanoid.WalkSpeed = originalWalkSpeed or 16
             end
         end
     end
-end)
+})
 
 MainLeftBoxLocalPlayer:AddSlider('WalkSpeed', {
     Text = 'Walk Speed',
@@ -107,59 +86,38 @@ MainLeftBoxLocalPlayer:AddSlider('WalkSpeed', {
     Compact = false,
 
     Callback = function(Value)
-        print('Walk speed changed to: ', Value)
+        local humanoid = getHumanoid()
+        if humanoid and Toggles.EnableWalkSpeedHacks.Value then
+            humanoid.WalkSpeed = Value
+        end
     end
 })
-
-Options.WalkSpeed:OnChanged(function()
-    local humanoid = getHumanoid()
-    if humanoid and enabledSpeed and humanoid.WalkSpeed > 0 then
-        humanoid.WalkSpeed = Options.WalkSpeed.Value
-    end
-end)
 
 MainLeftBoxLocalPlayer:AddToggle('EnableJumpPowerHacks', {
     Text = 'Enable Jump Power Hacks',
-    Default = false, -- Default value (true / false)
-    Tooltip = 'Enables jump power hacks', -- Information shown when you hover over the toggle
+    Default = false,
+    Tooltip = 'Enables jump power hacks',
 
     Callback = function(Value)
-        print('Player enabled jump power hacks', Value)
-    end
-})
-
-local originalJumpPower = nil
-
-Toggles.EnableJumpPowerHacks:OnChanged(function()
-    local humanoid = getHumanoid()
-    if humanoid then
-        if Toggles.EnableJumpPowerHacks.Value then
-            if not originalJumpPower then
-                originalJumpPower = humanoid.JumpPower
-            end
-            enabledJump = true
-            
-            if humanoid.JumpPower > 0 then
+        local humanoid = getHumanoid()
+        if humanoid then
+            if Value then
+                if not originalJumpPower then
+                    originalJumpPower = humanoid.JumpPower
+                end
                 humanoid.UseJumpPower = true
                 humanoid.JumpPower = Options.JumpPower.Value
-            end
-
-            if not jumpConnection then
                 jumpConnection = maintainJumpPower()
-            end
-        else
-            enabledJump = false
-            if jumpConnection then
-                jumpConnection:Disconnect()
-                jumpConnection = nil
-            end
-            if originalJumpPower then
-                humanoid.JumpPower = originalJumpPower
-                originalJumpPower = nil
+            else
+                if jumpConnection then
+                    jumpConnection:Disconnect()
+                    jumpConnection = nil
+                end
+                humanoid.JumpPower = originalJumpPower or 50
             end
         end
     end
-end)
+})
 
 MainLeftBoxLocalPlayer:AddSlider('JumpPower', {
     Text = 'Jump Power',
@@ -170,18 +128,12 @@ MainLeftBoxLocalPlayer:AddSlider('JumpPower', {
     Compact = false,
 
     Callback = function(Value)
-        print('Jump Power changed to: ', Value)
+        local humanoid = getHumanoid()
+        if humanoid and Toggles.EnableJumpPowerHacks.Value then
+            humanoid.JumpPower = Value
+        end
     end
 })
-
-Options.JumpPower:OnChanged(function()
-    local humanoid = getHumanoid()
-    if humanoid and enabledJump and humanoid.JumpPower > 0 then
-        humanoid.UseJumpPower = true
-        humanoid.JumpPower = Options.JumpPower.Value
-    end
-end)
-
 local GiveArmor = MainLeftBoxLocalPlayer:AddButton('Give Armor', function()
 	local player = game.Players.LocalPlayer -- Gets the player who executed the script
     local args = {
