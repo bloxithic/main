@@ -47,12 +47,13 @@ local function maintainWalkSpeed()
     return RunService.RenderStepped:Connect(function()
         local humanoid = getHumanoid()
         if humanoid and enabledSpeed then
-            humanoid.WalkSpeed = Options.WalkSpeed.Value
+            -- If the game's WalkSpeed is 0, do not apply the speed hack
+            if humanoid.WalkSpeed > 0 then
+                humanoid.WalkSpeed = Options.WalkSpeed.Value
+            end
         end
     end)
 end
-
-local speedConnection = nil
 
 Toggles.EnableWalkSpeedHacks:OnChanged(function()
     local humanoid = getHumanoid()
@@ -60,14 +61,18 @@ Toggles.EnableWalkSpeedHacks:OnChanged(function()
         if Toggles.EnableWalkSpeedHacks.Value then
             originalWalkSpeed = humanoid.WalkSpeed
             enabledSpeed = true
-            humanoid.WalkSpeed = Options.WalkSpeed.Value
+            
+            if humanoid.WalkSpeed > 0 then
+                humanoid.WalkSpeed = Options.WalkSpeed.Value
+            end
+
             if not speedConnection then
-                speedConnection = maintainWalkSpeed() -- Starts enforcing speed every frame
+                speedConnection = maintainWalkSpeed()
             end
         else
             enabledSpeed = false
             if speedConnection then
-                speedConnection:Disconnect() -- Stops enforcing speed
+                speedConnection:Disconnect()
                 speedConnection = nil
             end
             humanoid.WalkSpeed = originalWalkSpeed or 16
@@ -90,7 +95,7 @@ MainLeftBoxLocalPlayer:AddSlider('WalkSpeed', {
 
 Options.WalkSpeed:OnChanged(function()
     local humanoid = getHumanoid()
-    if humanoid and enabledSpeed then
+    if humanoid and enabledSpeed and humanoid.WalkSpeed > 0 then
         humanoid.WalkSpeed = Options.WalkSpeed.Value
     end
 end)
