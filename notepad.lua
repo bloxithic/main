@@ -100,7 +100,7 @@ end)
 local GiveBroom = MainRightBoxWeapons:AddButton('Give Broom', function()
 	local player = game.Players.LocalPlayer -- Gets the player who executed the script
 	local args = {
-	    [1] = 3, -- The vending item ID for "Broom"
+		[1] = 3, -- The vending item ID for "Broom"
     	[2] = "Broom", -- The tool you want to give
     	[3] = "Weapons", -- The category or section
     	[4] = player.Name, -- Automatically sets the player's name (dynamic)
