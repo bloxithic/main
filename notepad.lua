@@ -23,6 +23,44 @@ local Tabs = {
 
 local MainLeftBoxLocalPlayer = Tabs.Main:AddLeftGroupbox('LocalPlayer')
 
+MainLeftBoxLocalPlayer:AddToggle('EnableWalkSpeedHacks', {
+    Text = 'Enable Walk Speed Hacks',
+    Default = false, -- Default value (true / false)
+    Tooltip = 'Enables speed hacks', -- Information shown when you hover over the toggle
+
+    Callback = function(Value)
+        print('Player enabled speed hacks', Value)
+    end
+})
+
+local originalWalkSpeed = nil
+local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+
+-- Function to get the humanoid safely
+local function getHumanoid()
+    local character = game.Players.LocalPlayer.Character
+    return character and character:FindFirstChildOfClass("Humanoid")
+end
+
+Toggles.EnableWalkSpeedHacks:OnChanged(function()
+    local humanoid = getHumanoid()
+    
+    if humanoid then
+        if Toggles.EnableWalkSpeedHacks.Value then
+            if not EnabledSpeed then
+                originalWalkSpeed = humanoid.WalkSpeed -- Store latest walk speed before modifying
+            end
+            EnabledSpeed = true
+            humanoid.WalkSpeed = Options.WalkSpeed.Value -- Set speed from slider
+        else
+            EnabledSpeed = false
+            if originalWalkSpeed then
+                humanoid.WalkSpeed = originalWalkSpeed -- Restore latest game-set speed
+            end
+        end
+    end
+end)
+
 MainLeftBoxLocalPlayer:AddSlider('WalkSpeed', {
     Text = 'Walk Speed',
     Default = 16,
@@ -32,15 +70,69 @@ MainLeftBoxLocalPlayer:AddSlider('WalkSpeed', {
     Compact = false,
 
     Callback = function(Value)
-        print('Walk Speed changed to: ', Value)
+        print('Walk speed changed to: ', Value)
     end
 })
 
 Options.WalkSpeed:OnChanged(function()
-    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = WalkSpeed.Value
+    local humanoid = getHumanoid()
+
+    if humanoid and EnabledSpeed then
+        humanoid.WalkSpeed = Options.WalkSpeed.Value
+    end
 end)
 
+MainLeftBoxLocalPlayer:AddToggle('EnableJumpPowerHacks', {
+    Text = 'Enable Jump Power Hacks',
+    Default = false, -- Default value (true / false)
+    Tooltip = 'Enables jump power hacks', -- Information shown when you hover over the toggle
 
+    Callback = function(Value)
+        print('Player enabled jump power hacks', Value)
+    end
+})
+
+local originalJumpPower = nil
+
+Toggles.EnableJumpPowerHacks:OnChanged(function()
+    local humanoid = getHumanoid()
+    
+    if humanoid then
+        if Toggles.EnableJumpPowerHacks.Value then
+            if not EnabledJump then
+                originalJumpPower = humanoid.JumpPower -- Store latest walk speed before modifying
+            end
+            EnabledJump = true
+            humanoid.JumpPower = Options.JumpPower.Value -- Set speed from slider
+        else
+            EnabledJump = false
+            if originalJumpPower then
+                humanoid.JumpPower = originalJumpPower -- Restore latest game-set speed
+            end
+        end
+    end
+end)
+
+MainLeftBoxLocalPlayer:AddSlider('JumpPower', {
+    Text = 'Jump Power',
+    Default = 50,
+    Min = 0,
+    Max = 100,
+    Rounding = 1,
+    Compact = false,
+
+    Callback = function(Value)
+        print('Jump Power changed to: ', Value)
+    end
+})
+
+Options.JumpPower:OnChanged(function()
+    local humanoid = getHumanoid()
+
+    if humanoid and EnabledJump then
+        humanoid.JumpPower = Options.JumpPower.Value
+    end
+end)
 
 local MainRightBoxItems = Tabs.Main:AddRightGroupbox('Items')
 
