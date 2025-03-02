@@ -21,7 +21,24 @@ local Tabs = {
     ['UI Settings'] = Window:AddTab('UI Settings'),
 }
 
-local MainLeftBoxLocalPlayer = Tabs.Main:AddRightGroupbox('LocalPlayer')
+local MainLeftBoxLocalPlayer = Tabs.Main:AddLeftGroupbox('LocalPlayer')
+
+MainLeftBoxLocalPlayer:AddSlider('WalkSpeed', {
+    Text = 'Walk Speed',
+    Default = 16,
+    Min = 0,
+    Max = 100,
+    Rounding = 1,
+    Compact = false,
+
+    Callback = function(Value)
+        print('Walk Speed changed to: ', Value)
+    end
+})
+
+Options.WalkSpeed:OnChanged(function()
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = WalkSpeed.Value
+end)
 
 
 
