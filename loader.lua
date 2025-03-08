@@ -20,7 +20,7 @@ local Tabs = {
 
 local MainLeftKeySystem = Tabs.Main:AddLeftGroupbox('Key System')
 
-MainLeftKeySystem:AddInput('Type key', {
+MainLeftKeySystem:AddInput('TypeKey', {
     Default = nil,
     Numeric = false, -- true / false, only allows numbers
     Finished = true, -- true / false, only calls callback when you press enter
@@ -29,8 +29,6 @@ MainLeftKeySystem:AddInput('Type key', {
 
     Placeholder = 'Key', -- placeholder text when the box is empty
     -- MaxLength is also an option which is the max length of the text
-
-    Callback = function(Value)
-        print('[cb] Text updated. New text:', Value)
-    end
 })
+
+
