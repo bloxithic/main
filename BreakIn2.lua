@@ -42,154 +42,107 @@ function clip()
 	if Noclip then Noclip:Disconnect() end
 	Clip = true
 end
--- Main code/GUI
-
+-- Main code/GUI:
 local Window = Library:CreateWindow({
-    -- Set Center to true if you want the menu to appear in the center
-    -- Set AutoShow to true if you want the menu to appear when it is created
-    -- Position and Size are also valid options here
-    -- but you do not need to define them unless you are changing them :)
-
-    Title = 'notepad',
-    Center = true, 
+    Title = 'notepad | Universal',
+    Center = true,
     AutoShow = true,
+    TabPadding = 8,
+    MenuFadeTime = 0.2
 })
 
 local Tabs = {
-    -- Creates a new tab titled Main
     Main = Window:AddTab('Main'),
-    ['UI Settings'] = Window:AddTab('UI Settings'),
+	Visuals = Window:AddTab('Visuals'),
+    Settings = Window:AddTab('Settings'),
 }
 
-local MainLeftBoxLocalPlayer = Tabs.Main:AddLeftGroupbox('LocalPlayer')
+-- Main script/GUI:
+local MainLeftPlayer = Tabs.Main:AddLeftGroupbox('Player')
 
-MainLeftBoxLocalPlayer:AddToggle('EnableWalkSpeedHacks', {
+MainLeftPlayer:AddToggle('WalkSpeedToggle', {
     Text = 'Enable Walk Speed Hacks',
-    Default = false, -- Default value (true / false)
-    Tooltip = 'Enables speed hacks', -- Information shown when you hover over the toggle
+    Default = false,
 
     Callback = function(Value)
-        print('Player enabled speed hacks', Value)
-    end
-})
-
-local originalWalkSpeed = nil
-local EnabledSpeed = false
-local speedConnection = nil
-
-local function maintainWalkSpeed()
-	return RunService.RenderStepped:Connect(function()
-		local humanoid = getHumanoid()
-		if humanoid and EnabledSpeed then
-			if humanoid.Walkspeed > 0 then
-				humanoid.WalkSpeed = Options.WalkSpeed.Value
-			end
-		end
-	end)
-end
-
-Toggles.EnableWalkSpeedHacks:OnChanged(function()
-    local humanoid = getHumanoid()
-    if humanoid then
-        if Toggles.EnableWalkSpeedHacks.Value then
-            if not EnabledSpeed then
-                originalWalkSpeed = humanoid.WalkSpeed
-            end
-            EnabledSpeed = true
-            humanoid.WalkSpeed = Options.WalkSpeed.Value -- Set speed from slider
-        else
-            EnabledSpeed = false
-            if originalWalkSpeed then
-                humanoid.WalkSpeed = originalWalkSpeed -- Restore latest game-set speed
+        if humanoid then
+            if Value then
+                -- Enable walk speed hacks
+                humanoid.WalkSpeed = Options.WalkSpeedSlider.Value
+            else
+                -- Reset to original walk speed
+                humanoid.WalkSpeed = originalWalkSpeed
             end
         end
     end
-end)
+})
 
-MainLeftBoxLocalPlayer:AddSlider('WalkSpeed', {
+MainLeftPlayer:AddSlider('WalkSpeedSlider', {
     Text = 'Walk Speed',
-    Default = 16,
-    Min = 0,
-    Max = 100,
-    Rounding = 1,
-    Compact = true,
+    Default = originalWalkSpeed, -- Default to the original walk speed
+    Min = 0, -- Minimum walk speed
+    Max = 100, -- Maximum walk speed
+    Rounding = 0, -- No decimal places
+    Compact = true, -- Compact mode (hides the title and max value)
 
     Callback = function(Value)
-        print('Jump power changed to: ', Value)
+        if Toggles.WalkSpeedToggle.Value and humanoid then
+            -- Update walk speed if hacks are enabled
+            humanoid.WalkSpeed = Value
+        end
     end
 })
 
-Options.WalkSpeed:OnChanged(function()
-    local humanoid = getHumanoid()
-    if humanoid and EnabledSpeed and humanoid.WalkSpeed > 0 then
-        humanoid.WalkSpeed = Options.WalkSpeed.Value
-    end
-end)
-
-MainLeftBoxLocalPlayer:AddToggle('EnableJumpPowerHacks', {
+-- Jump Power Toggle and Slider
+MainLeftPlayer:AddToggle('JumpPowerToggle', {
     Text = 'Enable Jump Power Hacks',
-    Default = false, -- Default value (true / false)
-    Tooltip = 'Enables jump power hacks', -- Information shown when you hover over the toggle
+    Default = false,
 
     Callback = function(Value)
-        print('Player enabled jump power hacks', Value)
-    end
-})
-
-local originalJumpPower = nil
-local EnabledJump = false
-local jumpConnection = nil
-
-local function maintainJumpPower()
-	return RunService.RenderStepped:Connect(function()
-		local humanoid = getHumanoid()
-		if humanoid and EnabledJump then
-			if humanoid.Jumppower > 0 then
-				humanoid.JumpPower = Options.WalkSpeed.Value
-			end
-		end
-	end)
-end
-
-Toggles.EnableJumpPowerHacks:OnChanged(function()
-    local humanoid = getHumanoid()
-    if humanoid then
-        if Toggles.EnableJumpPowerHacks.Value then
-            if not EnabledJump then
-                originalJumpPower = humanoid.JumpPower
-            end
-            EnabledJump = true
-            humanoid.JumpPower = Options.JumpPower.Value -- Set speed from slider
-        else
-            EnabledJump = false
-            if originalJumpPower then
+        if humanoid then
+            if Value then
+                -- Enable jump power hacks
+                humanoid.JumpPower = Options.JumpPowerSlider.Value
+            else
+                -- Reset to original jump power
                 humanoid.JumpPower = originalJumpPower
             end
         end
     end
-end)
+})
 
-MainLeftBoxLocalPlayer:AddSlider('JumpPower', {
+MainLeftPlayer:AddSlider('JumpPowerSlider', {
     Text = 'Jump Power',
-    Default = 50,
-    Min = 0,
-    Max = 100,
-    Rounding = 1,
-    Compact = true,
+    Default = originalJumpPower, -- Default to the original jump power
+    Min = 0, -- Minimum jump power
+    Max = 100, -- Maximum jump power
+    Rounding = 0, -- No decimal places
+    Compact = true, -- Compact mode (hides the title and max value)
 
     Callback = function(Value)
-        print('Jump Power changed to: ', Value)
+        if Toggles.JumpPowerToggle.Value and humanoid then
+            -- Update jump power if hacks are enabled
+            humanoid.JumpPower = Value
+        end
     end
 })
 
-Options.WalkSpeed:OnChanged(function()
-    local humanoid = getHumanoid()
-    if humanoid and EnabledJump and humanoid.JumpPower > 0 then
-        humanoid.JumpPower = Options.JumpPower.Value
-    end
-end)
+MainLeftPlayer:AddDivider()
 
-local GiveArmor = MainLeftBoxLocalPlayer:AddButton('Give Armor', function()
+MainLeftPlayer:AddToggle('NoclipToggle', {
+    Text = 'Noclip',
+    Default = false,
+
+    Callback = function(Value)
+        if Value then
+            noclip()
+        else
+            clip()
+        end
+    end
+})
+
+local GiveArmor = MainLeftPlayer:AddButton('Give Armor', function()
 	local player = game.Players.LocalPlayer -- Gets the player who executed the script
     local args = {
     	[1] = 3, -- The vending item ID for "Armor2"
@@ -201,35 +154,35 @@ local GiveArmor = MainLeftBoxLocalPlayer:AddButton('Give Armor', function()
 	game:GetService("ReplicatedStorage").Events.Vending:FireServer(unpack(args))
 end)
 
-local AddStrength = MainLeftBoxLocalPlayer:AddButton('+1 Strength', function()
+local AddStrength = MainLeftPlayer:AddButton('+1 Strength', function()
 	local args = {
         [1] = "Strength"
     }
     game:GetService("ReplicatedStorage").Events.RainbowWhatStat:FireServer(unpack(args))
 end)
 
-local AddSpeed = MainLeftBoxLocalPlayer:AddButton('+1 Speed', function()
+local AddSpeed = MainLeftPlayer:AddButton('+1 Speed', function()
 	local args = {
         [1] = "Speed"
     }
     game:GetService("ReplicatedStorage").Events.RainbowWhatStat:FireServer(unpack(args))
 end)
 
-local MainRightBoxItems = Tabs.Main:AddRightGroupbox('Items')
+local MainRightItems = Tabs.Main:AddRightGroupbox('Items')
 
-local GiveGoldenApple = MainRightBoxItems:AddButton('Give Golden Apple', function()
+local GiveGoldenApple = MainRightItems:AddButton('Give Golden Apple', function()
     local args = {
     	[1] = "GoldenApple"
 	}
 	game:GetService("ReplicatedStorage").Events.GiveTool:FireServer(unpack(args))
 end)
-local GiveGoldPizza = MainRightBoxItems:AddButton('Give Golden Pizza', function()
+local GiveGoldPizza = MainRightItems:AddButton('Give Golden Pizza', function()
     local args = {
     	[1] = "GoldPizza"
 	}
 	game:GetService("ReplicatedStorage").Events.GiveTool:FireServer(unpack(args))
 end)
-local GiveRainbowPizza = MainRightBoxItems:AddButton('Give Rainbow Pizza', function()
+local GiveRainbowPizza = MainRightItems:AddButton('Give Rainbow Pizza', function()
     local args = {
     	[1] = "RainbowPizza"
 	}
@@ -238,7 +191,7 @@ end)
 
 local MainRightBoxWeapons = Tabs.Main:AddRightGroupbox('Weapons')
 
-local GiveBat = MainRightBoxWeapons:AddButton('Give Bat', function()
+local GiveBat = MainRightWeapons:AddButton('Give Bat', function()
 	local player = game.Players.LocalPlayer -- Gets the player who executed the script
 	local args = {
     	[1] = 3, -- The vending item ID (ensure this is correct for the "Bat")
@@ -248,7 +201,7 @@ local GiveBat = MainRightBoxWeapons:AddButton('Give Bat', function()
 	}
 	game:GetService("ReplicatedStorage").Events.Vending:FireServer(unpack(args))
 end)
-local GiveWrench = MainRightBoxWeapons:AddButton('Give Wrench', function()
+local GiveWrench = MainRightWeapons:AddButton('Give Wrench', function()
 	local player = game.Players.LocalPlayer -- Gets the player who executed the script
 	local args = {
     	[1] = 3, -- The vending item ID (ensure this is correct for the "Wrench")
@@ -258,7 +211,7 @@ local GiveWrench = MainRightBoxWeapons:AddButton('Give Wrench', function()
 	}
 	game:GetService("ReplicatedStorage").Events.Vending:FireServer(unpack(args))
 end)
-local GivePitchFork = MainRightBoxWeapons:AddButton('Give Pitch Fork', function()
+local GivePitchFork = MainRightWeapons:AddButton('Give Pitch Fork', function()
 	local player = game.Players.LocalPlayer -- Gets the player who executed the script
 	local args = {
     	[1] = 3, -- The vending item ID for "Pitchfork"
@@ -269,7 +222,7 @@ local GivePitchFork = MainRightBoxWeapons:AddButton('Give Pitch Fork', function(
 	}
 	game:GetService("ReplicatedStorage").Events.Vending:FireServer(unpack(args))
 end)
-local GiveHammer = MainRightBoxWeapons:AddButton('Give Hammer', function()
+local GiveHammer = MainRightWeapons:AddButton('Give Hammer', function()
 	local player = game.Players.LocalPlayer -- Gets the player who executed the script
 	local args = {
     	[1] = 3, -- The vending item ID for "Hammer"
@@ -280,7 +233,7 @@ local GiveHammer = MainRightBoxWeapons:AddButton('Give Hammer', function()
 	}
 	game:GetService("ReplicatedStorage").Events.Vending:FireServer(unpack(args))
 end)
-local GiveBroom = MainRightBoxWeapons:AddButton('Give Broom', function()
+local GiveBroom = MainRightWeapons:AddButton('Give Broom', function()
 	local player = game.Players.LocalPlayer -- Gets the player who executed the script
 	local args = {
 		[1] = 3, -- The vending item ID for "Broom"
