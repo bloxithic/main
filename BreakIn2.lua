@@ -245,7 +245,7 @@ local GiveBroom = MainRightWeapons:AddButton('Give Broom', function()
 	game:GetService("ReplicatedStorage").Events.Vending:FireServer(unpack(args))
 end)
 
-local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
+local MenuGroup = Tabs.Settings:AddLeftGroupbox('Menu')
 
 -- I set NoUI so it does not show up in the keybinds menu
 MenuGroup:AddButton('Unload', function() Library:Unload() end)
@@ -285,3 +285,18 @@ ThemeManager:ApplyToTab(Tabs.Settings)
 -- You can use the SaveManager:LoadAutoloadConfig() to load a config
 -- which has been marked to be one that auto loads!
 SaveManager:LoadAutoloadConfig()
+
+RunService.Stepped:Connect(function()
+    if not humanoid or not humanoid.Parent then
+        -- If humanoid is invalid (e.g., after reset), update it
+        updateHumanoid()
+    end
+
+    if Toggles.WalkSpeedToggle.Value and humanoid and humanoid.WalkSpeed ~= 0 then
+        humanoid.WalkSpeed = Options.WalkSpeedSlider.Value
+    end
+
+    if Toggles.JumpPowerToggle.Value and humanoid and humanoid.JumpPower ~= 0 then
+        humanoid.JumpPower = Options.JumpPowerSlider.Value
+    end
+end)
