@@ -4,5 +4,9 @@ local Window = OrionLib:MakeWindow({Name = "notepad", SaveConfig = false, Config
 
 local MainTab = Window:MakeTab({
 	Name = "Main",
-	Icon = "rbxassetid://4483345998"
+	Icon = "rbxassetid://127534778077913"
+})
+
+local MainTabFarmingSection = Main:AddSection({
+	Name = "Farming"
 })
