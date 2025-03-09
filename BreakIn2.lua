@@ -272,15 +272,15 @@ SaveManager:SetIgnoreIndexes({ 'MenuKeybind' })
 -- use case for doing it this way:
 -- a script hub could have themes in a global folder
 -- and game configs in a separate folder per game
-ThemeManager:SetFolder('MyScriptHub')
-SaveManager:SetFolder('MyScriptHub/specific-game')
+ThemeManager:SetFolder('notepad')
+SaveManager:SetFolder('notepad/BreakIn2')
 
 -- Builds our config menu on the right side of our tab
-SaveManager:BuildConfigSection(Tabs['UI Settings'])
+SaveManager:BuildConfigSection(Tabs.Settings)
 
 -- Builds our theme menu (with plenty of built in themes) on the left side
 -- NOTE: you can also call ThemeManager:ApplyToGroupbox to add it to a specific groupbox
-ThemeManager:ApplyToTab(Tabs['UI Settings'])
+ThemeManager:ApplyToTab(Tabs.Settings)
 
 -- You can use the SaveManager:LoadAutoloadConfig() to load a config
 -- which has been marked to be one that auto loads!
