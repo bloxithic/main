@@ -3,6 +3,14 @@ local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
 
+-- Variables:
+local RunService = game:GetService('RunService')
+local humanoid
+local originalWalkSpeed = 16 -- Default fallback value
+local originalJumpPower = 50 -- Default fallback value
+local Noclip = nil
+local Clip = nil
+
 -- Functions:
 local function updateHumanoid()
     humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid')
