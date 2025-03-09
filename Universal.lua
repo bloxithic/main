@@ -2,18 +2,14 @@ local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main
 local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
 local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
 local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
-local RunService = game:GetService('RunService')
 
 -- Variables
+local RunService = game:GetService('RunService')
 local humanoid
 local originalWalkSpeed = 16 -- Default fallback value
 local originalJumpPower = 50 -- Default fallback value
 local Noclip = nil
 local Clip = nil
-local emoteNames = {}
-local Emotes = {
-    Twerk = 4746273203,
-}
 
 -- Scripts:
 local function updateHumanoid()
@@ -22,10 +18,6 @@ local function updateHumanoid()
         originalWalkSpeed = humanoid.WalkSpeed
         originalJumpPower = humanoid.JumpPower
     end
-end
-
-for emoteName, _ in pairs(Emotes) do
-    table.insert(emoteNames, emoteName)
 end
 
 game.Players.LocalPlayer.CharacterAdded:Connect(updateHumanoid)
@@ -51,32 +43,6 @@ function clip()
 	Clip = true
 end
 
-local currentAnimTrack
-
-local function playEmote(emoteId)
-    if humanoid then
-        -- Stop the current animation if it's playing
-        if currentAnimTrack then
-            currentAnimTrack:Stop()
-            currentAnimTrack = nil
-        end
-
-        -- Load and play the new animation
-        local animation = Instance.new('Animation')
-        animation.AnimationId = 'rbxassetid://' .. emoteId
-        currentAnimTrack = humanoid:LoadAnimation(animation)
-        currentAnimTrack:Play()
-    end
-end
-
--- Function to stop emote
-local function stopEmote()
-    if currentAnimTrack then
-        currentAnimTrack:Stop()
-        currentAnimTrack = nil
-    end
-end
-
 -- Setup:
 local Window = Library:CreateWindow({
     Title = 'notepad | Universal',
@@ -89,7 +55,7 @@ local Window = Library:CreateWindow({
 local Tabs = {
     Main = Window:AddTab('Main'),
 	Visuals = Window:AddTab('Visuals'),
-    ['UI Settings'] = Window:AddTab('UI Settings'),
+    Settings = Window:AddTab('Settings'),
 }
 
 -- Main script/GUI:
@@ -177,41 +143,10 @@ MainLeftPlayer:AddToggle('NoclipToggle', {
     end
 })
 
-MainLeftPlayer:AddDivider()
-
-MainLeftPlayer:AddDropdown('EmotesDropdown', {
-    Values = { 'Rat Dance' },
-    Default = 1, -- number index of the value / string
-    Multi = false, -- true / false, allows multiple choices to be selected
-
-    Text = 'Emotes',
-
-    Callback = function(Value)
-        print('[cb] Dropdown got changed. New value:', Value)
-    end
-})
-
-MainLeftPlayer:AddToggle('PlayEmote', {
-    Text = 'Play Emote',
-    Default = false,
-
-    Callback = function(Value)
-		local selectedEmote = Options.EmotesDropdown.Value
-        local emoteId = Emotes[selectedEmote]
-		if Value then
-        	if emoteId then
-            	playEmote(emoteId)
-        	end
-		else
-			stopEmote()
-		end
-    end
-})
-
 local VisualsLeftESP = Tabs.Visuals:AddLeftGroupbox('ESP')
 
 -- UI Settings:
-local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
+local MenuGroup = Tabs.Settings:AddLeftGroupbox('Menu')
 
 MenuGroup:AddButton('Unload', function() Library:Unload() end)
 MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'RightShift', NoUI = true, Text = 'Menu keybind' })
@@ -238,21 +173,20 @@ SaveManager:SetIgnoreIndexes({ 'MenuKeybind' })
 -- a script hub could have themes in a global folder
 -- and game configs in a separate folder per game
 ThemeManager:SetFolder('notepad')
-SaveManager:SetFolder('MyScriptHub/specific-game')
+SaveManager:SetFolder('notepad/Universal')
 
 -- Builds our config menu on the right side of our tab
-SaveManager:BuildConfigSection(Tabs['UI Settings'])
+SaveManager:BuildConfigSection(Tabs.Settings)
 
 -- Builds our theme menu (with plenty of built in themes) on the left side
 -- NOTE: you can also call ThemeManager:ApplyToGroupbox to add it to a specific groupbox
-ThemeManager:ApplyToTab(Tabs['UI Settings'])
+ThemeManager:ApplyToTab(Tabs.Settings)
 
 -- You can use the SaveManager:LoadAutoloadConfig() to load a config
 -- which has been marked to be one that auto loads!
 SaveManager:LoadAutoloadConfig()
 
 -- More scripts:
-
 RunService.Stepped:Connect(function()
     if not humanoid or not humanoid.Parent then
         -- If humanoid is invalid (e.g., after reset), update it
