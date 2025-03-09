@@ -189,7 +189,7 @@ local GiveRainbowPizza = MainRightItems:AddButton('Give Rainbow Pizza', function
 	game:GetService("ReplicatedStorage").Events.GiveTool:FireServer(unpack(args))
 end)
 
-local MainRightBoxWeapons = Tabs.Main:AddRightGroupbox('Weapons')
+local MainRightWeapons = Tabs.Main:AddRightGroupbox('Weapons')
 
 local GiveBat = MainRightWeapons:AddButton('Give Bat', function()
 	local player = game.Players.LocalPlayer -- Gets the player who executed the script
